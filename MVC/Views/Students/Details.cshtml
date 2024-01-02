@@ -1,0 +1,47 @@
+﻿@model StudentModel
+@*Generated from Custom Template.*@
+@*Model namespace using directive should be added to _ViewImports.cshtml.*@
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+<h1>@ViewData["Title"]</h1>
+
+<div>
+    <h4>Student</h4>
+    <hr />
+    <dl class="row">
+        <dt class="col-2">
+            @Html.DisplayNameFor(model => model.StudentName)
+        </dt>
+        <dd class="col-10">
+            @Html.DisplayFor(model => model.StudentName)
+        </dd>
+        <dt class="col-2">
+            @Html.DisplayNameFor(model => model.Password)
+        </dt>
+        <dd class="col-10">
+            @Html.DisplayFor(model => model.Password)
+        </dd>
+        <dt class="col-2">
+            @Html.DisplayNameFor(model => model.IsActive)
+        </dt>
+        <dd class="col-10">
+            @Html.DisplayFor(model => model.IsActive)
+        </dd>
+        <dt class="col-2">
+            @Html.DisplayNameFor(model => model.GradeId)
+        </dt>
+        <dd class="col-10">
+            @Html.DisplayFor(model => model.GradeId)
+        </dd>
+    </dl>
+</div>
+<div>
+    <a asp-action="Edit" asp-route-id="@Model?.Id">Edit</a>&nbsp;|&nbsp;
+    <a asp-action="Index">Back to List</a>
+</div>
+
+
+
