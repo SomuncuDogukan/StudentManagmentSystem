@@ -41,16 +41,16 @@ namespace Business.Services
                 StudentCountOutput = r.StudentCourses.Count,
 
                 // querying over many to many relationship
-                StudentNamesOutput = string.Join("<br />", r.StudentCourses.Select(ur => ur.Student.StudentName)), 
-                StudentIdsInput = r.StudentCourses.Select(ur => ur.StudentId).ToList() 
+                StudentNamesOutput = string.Join("<br />", r.StudentCourses.Select(ur => ur.Student.StudentName)),
+                StudentIdsInput = r.StudentCourses.Select(ur => ur.StudentId).ToList()
             }).OrderByDescending(r => r.Id).ThenByDescending(r => r.Course_Title);
         }
 
         public Result Add(CourseModel model)
         {
-            
+
             if (
-                _db.Courses.Any(r => ( r.Course_Title.ToUpper() == model.Course_Title.ToUpper().Trim())))
+                _db.Courses.Any(r => (r.Course_Title.ToUpper() == model.Course_Title.ToUpper().Trim())))
                 return new ErrorResult("Course with the same title");
 
             var entity = new Course()
@@ -60,9 +60,9 @@ namespace Business.Services
                 // model.Content's trimmed value
                 Course_Content = model.Course_Content?.Trim(),
 
-             
+
                 Course_Title = model.Course_Title.Trim(), // since Title is required in the model, therefore can't be null,
-                                            // we don't need to use ?
+                                                          // we don't need to use ?
 
                 // inserting many to many relational entity,
 
@@ -78,11 +78,13 @@ namespace Business.Services
             return new SuccessResult("Course added successfully.");
         }
 
+
         public Result Update(CourseModel model)
         {
             if (
-                _db.Courses.Any(r => (r.Course_Title.ToUpper() == model.Course_Title.ToUpper().Trim())))
-                return new ErrorResult("Course with the same title");
+                  _db.Courses.Any(r =>
+                  r.Course_Title.ToUpper() == model.Course_Title.ToUpper().Trim() && r.Id != model.Id))
+                return new ErrorResult("Genre with same name cant exist!");
 
             // deleting many to many relational entity
             var existingEntity = _db.Courses.Include(r => r.StudentCourses).SingleOrDefault(r => r.Id == model.Id);

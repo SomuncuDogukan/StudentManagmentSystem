@@ -37,6 +37,8 @@ namespace MVC.Controllers
         // GET: Grades/Create
         public IActionResult Create()
         {
+
+
             // Add get related items service logic here to set ViewData if necessary and update null parameter in SelectList with these items
             return View();
         }

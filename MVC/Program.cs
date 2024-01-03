@@ -51,7 +51,7 @@ builder.Services.AddDbContext<Db>(options => options // options used in the AddD
 builder.Services.AddScoped<IStudentService, StudentService>();
 
 builder.Services.AddScoped<IGradeService, GradeService>();
-//builder.Services.AddScoped<IResourceService, ResourceService>();
+builder.Services.AddScoped<ICourseService, CourseService>();
 #endregion
 
 

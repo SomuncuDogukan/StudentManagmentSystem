@@ -10,6 +10,7 @@ using DataAccess.Contexts;
 using DataAccess.Entities;
 using Business.Models;
 using Business.Services;
+using Humanizer.Localisation;
 
 //Generated from Custom Template.
 namespace MVC.Controllers
@@ -18,26 +19,29 @@ namespace MVC.Controllers
     {
         // TODO: Add service injections here
         private readonly ICourseService _courseService;
-
-        public CoursesController(ICourseService courseService)
+        private readonly IStudentService _studentService;
+        public CoursesController(ICourseService courseService, IStudentService studentService)
         {
             _courseService = courseService;
+
+            _studentService = studentService;
+
         }
 
         // GET: Courses
         public IActionResult Index()
         {
-            List<CourseModel> courseList = new List<CourseModel>(); // TODO: Add get list service logic here
+            List<CourseModel> courseList = _courseService.GetList(); ; // TODO: Add get list service logic here
             return View(courseList);
         }
 
         // GET: Courses/Details/5
         public IActionResult Details(int id)
         {
-            CourseModel course = null; // TODO: Add get item service logic here
+            CourseModel course = _courseService.GetItem(id); // TODO: Add get item service logic here
             if (course == null)
             {
-                return NotFound();
+                return View("_Error", "Course not found!");
             }
             return View(course);
         }
@@ -45,6 +49,8 @@ namespace MVC.Controllers
         // GET: Courses/Create
         public IActionResult Create()
         {
+
+            ViewBag.Student = new MultiSelectList(_studentService.Query().ToList(), "Id", "StudentName");
             // TODO: Add get related items service logic here to set ViewData if necessary and update null parameter in SelectList with these items
             return View();
         }
@@ -59,8 +65,16 @@ namespace MVC.Controllers
             if (ModelState.IsValid)
             {
                 // TODO: Add insert service logic here
-                return RedirectToAction(nameof(Index));
+                var result = _courseService.Add(course);
+                if (result.IsSuccessful)
+                {
+                    TempData["Message"] = result.Message;
+                    return RedirectToAction(nameof(Index));
+                }
+                ModelState.AddModelError("", result.Message);
             }
+
+            ViewBag.Student = new MultiSelectList(_studentService.Query().ToList(), "Id", "StudentName");
             // TODO: Add get related items service logic here to set ViewData if necessary and update null parameter in SelectList with these items
             return View(course);
         }
@@ -68,11 +82,13 @@ namespace MVC.Controllers
         // GET: Courses/Edit/5
         public IActionResult Edit(int id)
         {
-            CourseModel course = null; // TODO: Add get item service logic here
+            CourseModel course = _courseService.GetItem(id); // TODO: Add get item service logic here
             if (course == null)
             {
-                return NotFound();
+                return View("_Error", "Course not found!");
             }
+            ViewBag.Student = new MultiSelectList(_studentService.Query().ToList(), "Id", "StudentName");
+
             // TODO: Add get related items service logic here to set ViewData if necessary and update null parameter in SelectList with these items
             return View(course);
         }
@@ -87,7 +103,17 @@ namespace MVC.Controllers
             if (ModelState.IsValid)
             {
                 // TODO: Add update service logic here
-                return RedirectToAction(nameof(Index));
+                // TODO: Add update service logic here
+                var result = _courseService.Update(course);
+                if (result.IsSuccessful)
+                {
+                    TempData["Message"] = result.Message;
+                    // Way 1: 
+                    //return RedirectToAction(nameof(Index));
+                    // Way 2: redirection with route values
+                    return RedirectToAction(nameof(Details), new { id = course.Id });
+                }
+                ModelState.AddModelError("", result.Message);
             }
             // TODO: Add get related items service logic here to set ViewData if necessary and update null parameter in SelectList with these items
             return View(course);
@@ -96,21 +122,12 @@ namespace MVC.Controllers
         // GET: Courses/Delete/5
         public IActionResult Delete(int id)
         {
-            CourseModel course = null; // TODO: Add get item service logic here
-            if (course == null)
-            {
-                return NotFound();
-            }
-            return View(course);
-        }
-
-        // POST: Courses/Delete
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public IActionResult DeleteConfirmed(int id)
-        {
-            // TODO: Add delete service logic here
+            var result = _courseService.Delete(id);
+            TempData["Message"] = result.Message;
             return RedirectToAction(nameof(Index));
         }
-	}
+
+
+
+    }
 }

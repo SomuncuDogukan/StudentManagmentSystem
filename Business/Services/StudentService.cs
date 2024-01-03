@@ -77,7 +77,7 @@ public class StudentService : IStudentService // UserService is a IUserService (
 
     public Results.Bases.Result Add(StudentModel model)
     {
-       
+
         List<Student> existingUsers = _db.Students.ToList();
         if (existingUsers.Any(u => u.StudentName.Equals(model.StudentName.Trim(), StringComparison.OrdinalIgnoreCase)))
             return new ErrorResult("User with the same user name already exists!");
@@ -142,38 +142,23 @@ public class StudentService : IStudentService // UserService is a IUserService (
     // Way 1:
     public Results.Bases.Result Delete(int id)
     {
-        // for example if we wanted to get the first record of the UserResources DbSet there are 2 ways:
-        // Way 1:
-        //_db.UserResources.Where(ur => ur.UserId == id).FirstOrDefault();
-        // Way 2:
-        //_db.UserResources.FirstOrDefault(ur => ur.UserId == id);
-
-        // 1) deleting the relational user resource records:
-        // Since there may be none, one or more than one relational user resources, we filter by using Where
-        // LINQ method and get an IQueryable (can be thought as a collection) then create the user resource
-        // list by calling the ToList LINQ method.
+       
         var userResourceEntities = _db.StudentCourses.Where(ur => ur.StudentId == id).ToList();
 
-        // Way 1: we can iterate through each user resource and delete it from the db set by calling Remove method
-        // foreach (var userResourceEntity in userResourceEntities) 
-        // {
-        //     _db.UserResources.Remove(userResourceEntity);
-        //}
-        // Way 2: we can use the RemoveRange method to remove one collection from another
         _db.StudentCourses.RemoveRange(userResourceEntities);
 
-        // 2) deleting the user record:
+        // deleting the user record:
         var userEntity = _db.Students.SingleOrDefault(u => u.Id == id);
         if (userEntity is null)
             return new ErrorResult("User not found!");
         _db.Students.Remove(userEntity);
 
-        _db.SaveChanges(); // changes in all of the db sets are commited to the database with Unit of Work
+        _db.SaveChanges(); 
 
         return new SuccessResult("User deleted successfully.");
     }
 
-    // Way 2: a better way
+ 
     public Results.Bases.Result DeleteStudent(int id)
     {
         // getting the user record joined with the user resources records
@@ -181,14 +166,14 @@ public class StudentService : IStudentService // UserService is a IUserService (
         if (userEntity is null)
             return new ErrorResult("User not found!");
 
-        // 1) deleting the relational user resource records:
+       
         _db.StudentCourses.RemoveRange(userEntity.StudentCourses);
 
-        // 2) deleting the user record:
+       
         _db.Students.Remove(userEntity);
 
-        _db.SaveChanges(); // changes in all of the db sets are commited to the database with Unit of Work
+        _db.SaveChanges(); 
 
-        return new SuccessResult("User deleted successfully.");
+        return new SuccessResult("Student deleted successfully.");
     }
 }

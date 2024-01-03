@@ -55,7 +55,7 @@ namespace Business.Services
             var nameSqlParameter = new SqlParameter("name", model.Name.Trim()); // using a parameter prevents SQL Injection
             // we provide SQL parameters to the SQL query as the second and rest parameters for the FromSqlRaw method
             // according to their usage order in the SQL query
-            var query = _db.Grades.FromSqlRaw("select * from Grade where LOWER(Name) = LOWER(@name)", nameSqlParameter);
+            var query = _db.Grades.FromSqlRaw("select * from Grades where LOWER(name) = LOWER(@name)", nameSqlParameter);
             if (query.Any()) // if there are any results for the query above
                 return new ErrorResult("Grade with the same name already exists!");
 
