@@ -1,110 +1,52 @@
-﻿@*
-    With Razor, C# codes can be written with HTML codes in the views.
-*@
+﻿<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
+<link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
 
-@* This is a Razor comment. *@
-
-@* Model of the view type declaration: *@
-@* @model IEnumerable<Business.StudentModel> *@
 @model IEnumerable<StudentModel>
-
-@*Generated from Custom Template.*@
-@*Model namespace using directive should be added to _ViewImports.cshtml.*@
-@*
-    The type of the model object of this view is IEnumerable<StudentModel> and
-    this object can be used by writing Model within Razor syntax.
-*@
 
 @{
     string title = "Student List";
-    ViewData["Title"] = title; @* ViewData is used for carrying data between views and from actions to views. *@
-
+    ViewData["Title"] = title;
     int count = Model.Count();
-    @* Count method returns the element count of an IEnumerable collection. *@
-
-    @* Ternary Operator *@
-    string countOutput = count == 0 ? "No records found." : count == 1 ? "1 record found." : count + " records found.";
+    string countOutput = count == 0 ? "No records found." : count == 1 ? "1 record found." : $"{count} records found.";
 }
 
-<h1>@title</h1> @* The string value set above will be written in the h1 tag. *@
+<h1>@title</h1>
 
 <p>
-    @* HTML: *@
-    @* <a href="/Studentss/Create">Create New</a> *@
-    @* Tag Helper Way 1: *@
-    @* <a asp-action="Create" asp-controller="Students">Create New</a> *@
-    @* Tag Helper Way 2: no need to write controller because we are under the Views/Studentsfolder with the Create view. *@
-    <a asp-action="Create">Create New</a>
+    <a class="btn btn-primary" asp-action="Create">Create New</a>
 </p>
 
-@* if there is a redirection in an action, the data should be carried with TempData to the redirected action's view *@
 @if (TempData["Message"] is not null)
 {
-    <p class="text-success">@TempData["Message"]</p>
+    <p class="alert alert-success">@TempData["Message"]</p>
 }
 
-@* displaying the model's element count *@
-<p class="text-info">
+<p class="alert alert-info">
     @countOutput
 </p>
 
-<table class="table">
-    <thead>
+<table class="table table-striped table-bordered">
+    <thead class="thead-dark">
         <tr>
-            <th>
-                @* HTML: *@
-                @* Student Name *@
-                @* HTML Helper: uses the DisplayName attribute of the StudentName property in the StudentModel class. *@
-                @Html.DisplayNameFor(model => model.StudentName)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.IsActiveOutput) @* property for formatted or extra data in the service *@
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.GradeNameOutput) @* property for formatted or extra data in the service *@
-            </th>
-            <th></th>
+            <th><i class="fas fa-user"></i> Student Name</th>
+            <th><i class="fas fa-check"></i> Is Active</th>
+            <th><i class="fas fa-graduation-cap"></i> Grade Name</th>
+            <th>Actions</th>
         </tr>
     </thead>
     <tbody>
         @foreach (var item in Model)
         {
             <tr>
+                <td>@Html.DisplayFor(modelItem => item.StudentName)</td>
+                <td>@Html.DisplayFor(modelItem => item.IsActiveOutput)</td>
+                <td>@Html.DisplayFor(modelItem => item.GradeNameOutput)</td>
                 <td>
-
-                    @* Way 1: *@
-                    @* @item.StudentName *@
-                    @* Way 2: HTML Helper: writes the data of the StudentName property in the StudentModel class. *@
-                    @Html.DisplayFor(modelItem => item.StudentName)
-
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.IsActiveOutput) @* property for formatted or extra data in the service *@
-                </td
-                <td>
-                    @Html.DisplayFor(modelItem => item.GradeNameOutput) @* property for formatted or extra data in the service *@
-                </td>
-                <td>
-                    @* HTML Way 1: query string *@
-                    @* <a href="/Students/Details?id=@item.Id">Details</a> *@
-                    @* Example: <a href="/Students/Details?id=13">Details</a> *@
-                    @* HTML Way 2: route value *@
-                    @* <a href="/Students/Details/@item.Id">Details</a> *@
-                    @* Example: <a href="/Students/Details/13">Details</a> *@
-                    @* HTML Helper: the last parameter of the helper method is the route value which must be the same as action's parameter name (id) *@
-                    @* @Html.ActionLink("Details", "Details", new { id = item.Id }) *@
-                    @* Tag Helper Way 1: asp-route-id is the route value which must be the same as action's parameter name (id) *@
-                    @* <a asp-action="Details" asp-controller="Students" asp-route-id="@item.Id">Details</a>&nbsp;|&nbsp; *@
-                    @* Tag Helper Way 2: no need to write the controller *@
-                    <a asp-action="Details" asp-route-id="@item.Id">Details</a>&nbsp;|&nbsp;
-
-                    <a asp-action="Edit" asp-route-id="@item.Id">Edit</a>&nbsp;|&nbsp;
-                    <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                    <a class="btn btn-info btn-sm" asp-action="Details" asp-route-id="@item.Id">Details</a>
+                    <a class="btn btn-warning btn-sm" asp-action="Edit" asp-route-id="@item.Id">Edit</a>
+                    <a class="btn btn-danger btn-sm" asp-action="Delete" asp-route-id="@item.Id">Delete</a>
                 </td>
             </tr>
         }
     </tbody>
 </table>
-
-
-

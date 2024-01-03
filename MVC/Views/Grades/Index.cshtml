@@ -9,7 +9,7 @@
 <h1>@ViewData["Title"]</h1>
 
 <p>
-    <a asp-action="Create">Create New</a>
+    <a class="btn btn-primary" asp-action="Create">Create New</a>
 </p>
 
 @if (TempData["Message"] is not null)
@@ -18,22 +18,24 @@
 }
 
 @{
-    var count = Model is null ? 0 : Model.Count();
+    var count = Model?.Count() ?? 0;
 }
 
 @if (count > 0)
 {
     <p class="text-info">@count grade(s) found.</p>
-    <table class="table">
-        <thead>
+    <table class="table table-striped">
+        <thead class="thead-dark">
             <tr>
                 <th>
-                    @Html.DisplayNameFor(model => model.Name)
+                    Grade Name
                 </th>
                 <th>
-                    @Html.DisplayNameFor(model => model.StudentCountOutput)
+                    Student Count
                 </th>
-                <th></th>
+                <th>
+                    Actions
+                </th>
             </tr>
         </thead>
         <tbody>
@@ -47,9 +49,9 @@
                         @Html.DisplayFor(modelItem => item.StudentCountOutput)
                     </td>
                     <td>
-                        <a asp-action="Details" asp-route-id="@item.Id">Details</a>&nbsp;|&nbsp;
-                        <a asp-action="Edit" asp-route-id="@item.Id">Edit</a>&nbsp;|&nbsp;
-                        <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                        <a class="btn btn-info btn-sm" asp-action="Details" asp-route-id="@item.Id">Details</a>
+                        <a class="btn btn-warning btn-sm" asp-action="Edit" asp-route-id="@item.Id">Edit</a>
+                        <a class="btn btn-danger btn-sm" asp-action="Delete" asp-route-id="@item.Id">Delete</a>
                     </td>
                 </tr>
             }
@@ -60,5 +62,3 @@ else
 {
     <p class="text-info">No grades found.</p>
 }
-
-
