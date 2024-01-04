@@ -6,43 +6,33 @@
     ViewData["Title"] = "Edit";
 }
 
-<h1>@ViewData["Title"]</h1>
+<div class="container">
+    <h1>@ViewData["Title"]</h1>
 
-<h4>Course</h4>
-<hr />
-<div class="row">
-    <div class="col-12">
-        <form asp-action="Edit">
-            @Html.AntiForgeryToken()
-            <div asp-validation-summary="All" class="text-danger"></div>
-            <input type="hidden" asp-for="Id" />
-            <div class="row mb-3">
-                <label asp-for="Course_Title" class="col-2 col-form-label"></label>
-                <div class="col-5">
+    <h4>Course</h4>
+    <hr />
+    <div class="row">
+        <div class="col-lg-6">
+            <form asp-action="Edit">
+                @Html.AntiForgeryToken()
+                <div asp-validation-summary="All" class="text-danger"></div>
+                <input type="hidden" asp-for="Id" />
+                <div class="mb-3">
+                    <label asp-for="Course_Title" class="form-label">Course Title</label>
                     <input asp-for="Course_Title" class="form-control" />
                     <span asp-validation-for="Course_Title" class="text-danger"></span>
                 </div>
-            </div>
-            <div class="row mb-3">
-                <label asp-for="Course_Content" class="col-2 col-form-label"></label>
-                <div class="col-5">
+                <div class="mb-3">
+                    <label asp-for="Course_Content" class="form-label">Course Content</label>
                     <input asp-for="Course_Content" class="form-control" />
                     <span asp-validation-for="Course_Content" class="text-danger"></span>
                 </div>
-            </div>
-            <div class="row mb-3">
-                <div class="offset-2 col-5">
-                    <input type="submit" value="Save" class="btn btn-primary" />
-                    &nbsp;&nbsp;
+                <div class="mb-3">
+                    <button type="submit" class="btn btn-primary">Save</button>
                     <button type="reset" class="btn btn-outline-primary">Reset</button>
-                    &nbsp;&nbsp;
-                    <a asp-action="Index">Back to List</a>
+                    <a class="btn btn-secondary" asp-action="Index">Back to List</a>
                 </div>
-            </div>
-        </form>
+            </form>
+        </div>
     </div>
 </div>
-
-
-
-

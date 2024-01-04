@@ -7,6 +7,13 @@
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/MVC.styles.css" asp-append-version="true" />
+    <style>
+        /* CSS to highlight active tab */
+        .nav-item.active > .nav-link {
+            font-weight: bold; 
+            color: #ff8500; 
+        }
+    </style>
 </head>
 <body>
     <header>
@@ -19,22 +26,24 @@
                 </button>
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
                     <ul class="navbar-nav flex-grow-1">
-                        <li class="nav-item">
+                        <!-- Home/Index -->
+                        <li class="nav-item @(Context.Request.RouteValues["Controller"].ToString() == "Home" && Context.Request.RouteValues["Action"].ToString() == "Index" ? "active" : "")">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
                         </li>
-                        <li class="nav-item">
+                        <!-- Home/Privacy -->
+                        <li class="nav-item @(Context.Request.RouteValues["Controller"].ToString() == "Home" && Context.Request.RouteValues["Action"].ToString() == "Privacy" ? "active" : "")">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
                         </li>
-                        <li class="nav-item">
+                        <!-- Students/Index -->
+                        <li class="nav-item @(Context.Request.RouteValues["Controller"].ToString() == "Students" && Context.Request.RouteValues["Action"].ToString() == "Index" ? "active" : "")">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Students" asp-action="Index">Student List</a>
                         </li>
-
-                        <li class="nav-item">
+                        <!-- Courses/Index -->
+                        <li class="nav-item @(Context.Request.RouteValues["Controller"].ToString() == "Courses" && Context.Request.RouteValues["Action"].ToString() == "Index" ? "active" : "")">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Courses" asp-action="Index">Courses List</a>
                         </li>
-
-
-                        <li class="nav-item">
+                        <!-- Grades/Index -->
+                        <li class="nav-item @(Context.Request.RouteValues["Controller"].ToString() == "Grades" && Context.Request.RouteValues["Action"].ToString() == "Index" ? "active" : "")">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Grades" asp-action="Index">Grade List</a>
                         </li>
                     </ul>

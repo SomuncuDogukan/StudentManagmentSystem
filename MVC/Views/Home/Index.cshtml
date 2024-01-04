@@ -1,8 +1,40 @@
 ﻿@{
-    ViewData["Title"] = "Home Page";
+    ViewData["Title"] = "Student Management System";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
-</div>
+<!DOCTYPE html>
+<html>
+<head>
+    <title>@ViewData["Title"]</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+    <div class="container-fluid">
+        <header>
+            <nav class="navbar navbar-expand-lg navbar-light bg-light">
+                <a class="navbar-brand">
+                    Student Management System
+                </a>
+            </nav>
+        </header>
+
+        <main role="main">
+            <div class="jumbotron text-center">
+                <h1 class="display-4">Welcome to the Student Management System</h1>
+                <p class="lead">Empowering Education, Managing Excellence</p>
+                <p>Explore the vast possibilities and functionalities of our system.</p>
+       
+            </div>
+
+            <div class="text-center">
+                <h2>Features:</h2>
+                <p>Efficiently manage student records, courses, grades, and more.</p>
+            </div>
+        </main>
+
+        <footer class="text-muted text-center mt-4">
+            <p>&copy; 2024 </p>
+        </footer>
+    </div>
+</body>
+</html>
