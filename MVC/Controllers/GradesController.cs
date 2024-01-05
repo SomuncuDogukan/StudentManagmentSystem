@@ -17,8 +17,15 @@ namespace MVC.Controllers
         }
 
         // GET: Grades
+
         public IActionResult Index()
         {
+            if (!User.HasClaim("Student", "true"))
+            {
+                // If the user is not a student, redirect to the index page
+                return RedirectToAction("Login", "Students"); // Change "Home" to the appropriate controller
+            }
+
             List<GradeModel> gradeList = _gradeService.Query().ToList();
             return View(gradeList);
         }
@@ -104,5 +111,7 @@ namespace MVC.Controllers
             TempData["Message"] = result.Message; // we must put TempData["Message"] in the Index view
             return RedirectToAction(nameof(Index));
         }
+
+
     }
 }

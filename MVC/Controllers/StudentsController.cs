@@ -3,8 +3,12 @@ using Business;
 using Business.Models;
 using Business.Results.Bases;
 using Business.Services;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using System.Security.Claims;
+using DataAccess.Entities;
 
 //Generated from Custom Template.
 namespace MVC.Controllers
@@ -29,20 +33,23 @@ namespace MVC.Controllers
         // GET: Users/GetList
         public IActionResult Index()
         {
-            // A query is executed and the result is stored in the collection
-            // when ToList method is called.
-            List<StudentModel> studentList = _studentService.Query().ToList();
 
-            // Way 1: 
-            //return View(userList); // model will be passed to the GetList view under Views/Users folder
-            // Way 2:
-            return View("Index", studentList); // model will be passed to the List view under Views/Users folder
+            if (!User.HasClaim("Student", "true"))
+            {
+                // If the user is not a director, redirect to the index page
+                return RedirectToAction("Login", "Students"); // Change "Home" to the appropriate controller
+            }
+            List<StudentModel> studentList = _studentService.Query().ToList();
+            // return View("Index", studentList); // model will be passed to the List view under Views/Users folder
+            return View(studentList); 
         }
 
         // Returning user list in JSON format:
         // GET: Users/GetListJson
         public JsonResult GetListJson()
         {
+
+
             var studentList = _studentService.Query().ToList();
             return Json(studentList);
         }
@@ -100,10 +107,10 @@ namespace MVC.Controllers
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost] // action method which is used for processing request data sent by a form or AJAX
-        [ValidateAntiForgeryToken] // attribute for preventing Cross-Site Request Forgery (CSRF) 
-        // Way 1: catching data with parameters through form input elements' name HTML attribute
-        //public IActionResult Create(string UserName, string Password, bool IsActive, Statuses Status, int RoleId)
-        // Way 2:
+        [ValidateAntiForgeryToken] 
+
+
+       
         public IActionResult Create(StudentModel student) // since UserModel has properties for above parameters, it should be used as action parameter
         {
             if (ModelState.IsValid) // validates the user action parameter (model) through data annotations above its properties
@@ -197,5 +204,62 @@ namespace MVC.Controllers
 
             return RedirectToAction(nameof(Index));
         }
+
+
+        #region User Authentication
+        public IActionResult Login()
+        {
+            return View(); // returning the Login view to the user for entering the user name and password
+        }
+
+        [HttpPost, ValidateAntiForgeryToken]
+        public IActionResult Login(StudentModel director)
+        {
+            // checking the active user from the database table by the user name and password
+            var existingUser = _studentService.Query().SingleOrDefault(u => u.StudentName == director.StudentName);
+            if (existingUser is null) // if an active user with the entered user name and password can't be found in the database table
+            {
+                ModelState.AddModelError("", "Invalid user name"); // send the invalid message to the view's validation summary 
+                return View(); // returning the Login view
+            }
+
+            // Creating the claim list that will be hashed in the authentication cookie which will be sent with each request to the web application.
+            // Only non-critical user data, which will be generally used in the web application such as user name to show in the views or user role
+            // to check if the user is authorized to perform specific actions, should be put in the claim list.
+            // Critical data such as password must never be put in the claim list!
+            List<Claim> userClaims = new List<Claim>()
+            {
+                new Claim(ClaimTypes.Name, existingUser.StudentName),
+                //new Claim(ClaimTypes.Surname, existingUser.Surname),
+                new Claim("Student", "true")
+            };
+
+            // creating an identity by the claim list and default cookie authentication
+            var userIdentity = new ClaimsIdentity(userClaims, CookieAuthenticationDefaults.AuthenticationScheme);
+
+            // creating a principal by the identity
+            var userPrincipal = new ClaimsPrincipal(userIdentity);
+
+            // signing the user in to the MVC web application and returning the hashed authentication cookie to the client
+            HttpContext.SignInAsync(userPrincipal);
+
+            // redirecting user to the home page
+            return RedirectToAction("Index", "Home");
+        }
+        [HttpPost, ValidateAntiForgeryToken]
+        public async Task<IActionResult> Logout()
+        {
+            // Sign the user out
+            await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+
+            return RedirectToAction("Index", "Home"); // Redirect to the home page or any other page after logout
+        }
+        #endregion
     }
+
+
+
+
+
 }
+

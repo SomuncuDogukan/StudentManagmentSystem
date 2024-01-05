@@ -11,6 +11,7 @@ using DataAccess.Entities;
 using Business.Models;
 using Business.Services;
 using Humanizer.Localisation;
+using Microsoft.AspNetCore.Authorization;
 
 //Generated from Custom Template.
 namespace MVC.Controllers
@@ -47,31 +48,58 @@ namespace MVC.Controllers
         }
 
         // GET: Courses/Create
+        [Authorize]
         public IActionResult Create()
         {
+
+            if (!User.HasClaim("Student", "true"))
+            {
+               
+                return RedirectToAction("Index", "Home"); 
+            }
 
             ViewBag.Student = new MultiSelectList(_studentService.Query().ToList(), "Id", "StudentName");
             // TODO: Add get related items service logic here to set ViewData if necessary and update null parameter in SelectList with these items
             return View();
         }
 
+
+
+
+
+
+
+
+
+
+
         // POST: Courses/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
+        [Authorize]
         [ValidateAntiForgeryToken]
         public IActionResult Create(CourseModel course)
         {
             if (ModelState.IsValid)
             {
-                // TODO: Add insert service logic here
-                var result = _courseService.Add(course);
-                if (result.IsSuccessful)
+
+                if (!User.HasClaim("Student", "true"))
                 {
-                    TempData["Message"] = result.Message;
-                    return RedirectToAction(nameof(Index));
+                    // If the user is not a student, redirect to the index page
+                    return RedirectToAction("Index", "Home"); // Change "Home" to the appropriate controller
                 }
-                ModelState.AddModelError("", result.Message);
+                if (ModelState.IsValid)
+                {
+                    // TODO: Add insert service logic here
+                    var result = _courseService.Add(course);
+                    if (result.IsSuccessful)
+                    {
+                        TempData["Message"] = result.Message;
+                        return RedirectToAction(nameof(Index));
+                    }
+                    ModelState.AddModelError("", result.Message);
+                }
             }
 
             ViewBag.Student = new MultiSelectList(_studentService.Query().ToList(), "Id", "StudentName");

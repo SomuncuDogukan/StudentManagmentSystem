@@ -10,8 +10,37 @@
     <style>
         /* CSS to highlight active tab */
         .nav-item.active > .nav-link {
-            font-weight: bold; 
-            color: #ff8500; 
+            font-weight: bold;
+            color: #ff8500;
+        }
+        /* Improved navbar styles */
+        .navbar {
+            background-color: #f8f9fa; /* Light grey background */
+        }
+
+        .navbar-brand {
+            font-weight: bold;
+            color: #333; /* Dark grey color */
+        }
+
+        .navbar-nav .nav-link {
+            color: #333; /* Dark grey color */
+        }
+
+            .navbar-nav .nav-link:hover {
+                color: #ff8500; /* Hover color */
+            }
+
+        .navbar-toggler {
+            border-color: #333; /* Dark grey color */
+        }
+        /* Footer styles */
+        .footer {
+            background-color: #f8f9fa; /* Light grey background */
+            padding: 20px 0;
+            text-align: center;
+            font-size: 14px;
+            color: #666; /* Grey color */
         }
     </style>
 </head>
@@ -26,6 +55,19 @@
                 </button>
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
                     <ul class="navbar-nav flex-grow-1">
+                        @if (User.HasClaim("Student", "true"))
+                        {
+                            <form asp-controller="Students" asp-action="Logout" method="post" class="form-inline">
+                                @Html.AntiForgeryToken()
+                                <button type="submit" class="btn btn-danger">Logout</button>
+                            </form>
+                        }
+                        else
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link" asp-area="" asp-controller="Students" asp-action="Login">Login</a>
+                            </li>
+                        }
                         <!-- Home/Index -->
                         <li class="nav-item @(Context.Request.RouteValues["Controller"].ToString() == "Home" && Context.Request.RouteValues["Action"].ToString() == "Index" ? "active" : "")">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
@@ -59,9 +101,10 @@
 
     <footer class="border-top footer text-muted">
         <div class="container">
-            &copy; 2024 - MVC - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+            &copy; 2024 - MVC - <a asp-area="" asp-controller="Home" asp-action="Privacy" style="color: #333;">Privacy</a>
         </div>
     </footer>
+
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
