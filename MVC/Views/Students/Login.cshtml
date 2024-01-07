@@ -10,6 +10,11 @@
 <h1>@ViewData["Title"]</h1>
 @{
 
+    <div class="alert alert-info" role="alert">
+        In this version, I've enabled easier login and review using only the Student name.
+        The password-related section for incorrect entries of the Student Name has intentionally not been removed -> In my DB it is "STUDENT" written to login for the Student Name field.
+    </div>
+
     if (User.HasClaim("Student", "true"))
     {
         <p>you alredy have logged in</p>
@@ -35,6 +40,7 @@
                             <span asp-validation-for="StudentName" class="text-danger"></span>
                         </div>
                     </div>
+                    <!--
                     <div class="row mb-3">
                         <label asp-for="Password" class="col-2 col-form-label"></label>
                         <div class="col-5">
@@ -42,6 +48,8 @@
                             <span asp-validation-for="Password" class="text-danger"></span>
                         </div>
                     </div>
+                    -->
+
 
                     <div class="row mb-3">
                         <div class="offset-2 col-5">
